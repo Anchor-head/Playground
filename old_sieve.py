@@ -1,5 +1,5 @@
 def sieve(limit):
-    a=2
+    
     if limit < 2:
 
         return []
@@ -26,9 +26,11 @@ def sieve(limit):
 
         while j < limit:
 
+            if (3 * i * i) + (j * j) > limit and (3 * i * i) - (k * k) > limit:
+                break
+            
             n = (4 * i * i) + (j * j)
-            if (n <= limit and (n % 12 == 1 or
-                                n % 12 == 5)):
+            if (n <= limit and (n % 12 == 1 or n % 12 == 5)):
                 res[n] ^= True
 
             n = (3 * i * i) + (j * j)
@@ -36,15 +38,11 @@ def sieve(limit):
                 res[n] ^= True
 
             n = (3 * i * i) - (k * k)
-            if (i > j and n <= limit and
-                    n % 12 == 11):
+            if (i > j and n <= limit and n % 12 == 11):
                 res[n] ^= True
 
             j += 1
             k -= 1
-
-            if (3 * i * i) + (j * j) > limit and (j >= i  or (3 * i * i) - (j * j) > limit):
-                break
         
         i += 1
 
