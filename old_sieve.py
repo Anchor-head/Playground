@@ -1,5 +1,5 @@
 def sieve(limit):
-
+    a=2
     if limit < 2:
 
         return []
