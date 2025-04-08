@@ -21,28 +21,28 @@ def sieve(limit):
 
     i = 1
     while i < limit:
+        
         j = 1
-        k = i - 1
-
-        while j < limit:
-
-            if (3 * i * i) + (j * j) > limit and (3 * i * i) - (k * k) > limit:
-                break
+        while (3 * i * i) + (j * j) <= limit:
             
             n = (4 * i * i) + (j * j)
-            if (n <= limit and (n % 12 == 1 or n % 12 == 5)):
-                res[n] ^= True
+            if (n % 12 == 1 or n % 12 == 5):
+                res[n-1] ^= True
 
             n = (3 * i * i) + (j * j)
             if n <= limit and n % 12 == 7:
+                res[n-1] ^= True
+            
+            j+=1
+                
+        j = i - 1
+        while (3 * i * i) - (j * j) <= limit
+
+            n = (3 * i * i) - (j * j)
+            if n % 12 == 11:
                 res[n] ^= True
 
-            n = (3 * i * i) - (k * k)
-            if (i > j and n <= limit and n % 12 == 11):
-                res[n] ^= True
-
-            j += 1
-            k -= 1
+            j -= 1
         
         i += 1
 
