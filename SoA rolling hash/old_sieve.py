@@ -24,7 +24,6 @@ def sieve(limit):
 
     i = 1
     while ((3 * i**2) + 1 <= limit) or ((3 * i**2) - (i-1)**2 <= limit): 
-    #looping through all feasible values of i
         
         j = 1
         
@@ -117,7 +116,7 @@ if __name__ == '__main__':
 
 
     # find a fitting prime modulus for rolling hash
-    modulus = pick_prime(primes, 1000) # min_size is typically much bigger than this to avoid collision
+    modulus = pick_prime(primes, 1000) # min_size is typically much larger to avoid collision, e.g. 10^9+7
 
 
     # words to hash as a test
@@ -130,5 +129,3 @@ if __name__ == '__main__':
         hash_value = hash(string, modulus)
 
         print(f"Hash of {string} is {hash_value}")
-    
-    print(modulus)
