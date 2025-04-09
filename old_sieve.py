@@ -1,5 +1,7 @@
 def sieve(limit):
     
+    """returns a list of all primes less than limit"""
+    
     if limit < 2:
 
         return []
@@ -22,11 +24,12 @@ def sieve(limit):
 
     i = 1
     while ((3 * i**2) + 1 <= limit) or ((3 * i**2) - (i-1)**2 <= limit): 
+    #looping through all feasible values of i
         
         j = 1
         
         while (n := (4 * i**2) + (j**2)) <= limit:
-            
+        
             if (n % 12 == 1 or n % 12 == 5):
                 res[n-1] ^= True
 
@@ -45,7 +48,7 @@ def sieve(limit):
             j+=1
                 
                 
-        j = i - 1
+        j = i - 1 
         while ((n := (3 * i**2) - (j**2)) <= limit) and (j>0):
 
             if n % 12 == 11:
@@ -55,6 +58,8 @@ def sieve(limit):
         
         i += 1
 
+
+    # now unmarking multiples of squares of primes
     r = 5
     while r <= limit:
         
@@ -71,7 +76,7 @@ def sieve(limit):
 
 def pick_prime(primes, min_size=1000):
 
-    """returns a suitable prime to use as modulus"""
+    """returns the first prime greater than your minimum size"""
 
     for prime in primes:
 
@@ -85,16 +90,17 @@ def pick_prime(primes, min_size=1000):
 
 
 
-def hash(string, modulus):
+def hash(string, modulus, p=31):
+# p should be greater than the number of different possible characters in strings
+# default p=31 is for lowercase letter-only strings; use p=53 for mixed case strings,
+# or even higher prime values of p if strings may include numbers and special characters too.
 
-    """implements polynomial rolling of string keys"""
+    """implements polynomial rolling hash on string"""
+    
     hash_value = 0
-    p=31
     power=1
     
     for char in string:
-
-        # hash = 33 XOR ord(c)
 
         hash_value += ord(char)*power
         power *= p
@@ -104,17 +110,17 @@ def hash(string, modulus):
 
 
 if __name__ == '__main__':
+# example test case
 
     # generate primes list to use as modulus
-
     primes = sieve(10000) # modify limit based on your needs
 
 
+    # find a fitting prime modulus for rolling hash
+    modulus = pick_prime(primes, 1000) # min_size is typically much bigger than this to avoid collision
 
-    modulus = pick_prime(primes, 1000)
 
-
-
+    # words to hash as a test
     test_array = ["alpha","beta","gamma","delta","epsilon"]
 
 
