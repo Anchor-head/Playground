@@ -114,7 +114,7 @@ def check_win():
 
     global grid, current_winner, is_draw
 
-    for row in range(0, 3):
+    for row in range(3):
 
         if (grid[row][0] == grid[row][1] == grid[row][2]) and (grid[row][0] is not None):
 
