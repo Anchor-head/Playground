@@ -6,23 +6,22 @@ def sieve(limit):
 
     if limit == 2:
 
-        return [False, True]
-
-    res = [False, True, True]
+        return [2]
     
     if limit == 3:
 
-        return [False, True, True]
+        return [2,3]
 
 
-
+    primes = [2,3]
+    res = [False, True, True]
     for i in range(4, limit + 1):
         res.append(False)
 
 
 
     i = 1
-    while (3 * i**2) + 1 > limit and (3 * i**2) - (i-1)**2 > limit: 
+    while ((3 * i**2) + 1 <= limit) or ((3 * i**2) - (i-1)**2 <= limit): 
         
         j = 1
         
@@ -47,7 +46,7 @@ def sieve(limit):
                 
                 
         j = i - 1
-        while (n := (3 * i**2) - (j**2)) <= limit:
+        while ((n := (3 * i**2) - (j**2)) <= limit) and (j>0):
 
             if n % 12 == 11:
                 res[n-1] ^= True
@@ -57,15 +56,16 @@ def sieve(limit):
         i += 1
 
     r = 5
-    while r * r <= limit:
+    while r <= limit:
         
         if res[r-1]:
+            primes.append(r)
             for i in range(r * r, limit + 1, r * r):
                 res[i-1] = False
 
         r += 1
 
-    return res
+    return primes
 
 
 
@@ -88,14 +88,16 @@ def pick_prime(primes, min_size=1000):
 def hash(string, modulus):
 
     """implements polynomial rolling of string keys"""
-
-    hash_value = 5381
-
+    hash_value = 0
+    p=31
+    power=1
+    
     for char in string:
 
         # hash = 33 XOR ord(c)
 
-        hash_value = ((hash_value << 5) + hash_value) ^ ord(char)
+        hash_value += ord(char)*power
+        power *= p
 
     return hash_value % modulus
 
@@ -122,3 +124,5 @@ if __name__ == '__main__':
         hash_value = hash(string, modulus)
 
         print(f"Hash of {string} is {hash_value}")
+    
+    print(modulus)
