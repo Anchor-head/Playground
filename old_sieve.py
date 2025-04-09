@@ -8,39 +8,49 @@ def sieve(limit):
 
         return [False, True]
 
+    res = [False, True, True]
+    
     if limit == 3:
 
         return [False, True, True]
 
 
-    primes=[2,3]
-    res = [i in primes for i in range(1,4)]
 
     for i in range(4, limit + 1):
         res.append(False)
 
+
+
     i = 1
-    while i < limit:
+    while (3 * i**2) + 1 > limit and (3 * i**2) - (i-1)**2 > limit: 
         
         j = 1
-        while (3 * i * i) + (j * j) <= limit:
+        
+        while (n := (4 * i**2) + (j**2)) <= limit:
             
-            n = (4 * i * i) + (j * j)
             if (n % 12 == 1 or n % 12 == 5):
                 res[n-1] ^= True
 
-            n = (3 * i * i) + (j * j)
+            n = (3 * i**2) + (j**2)
+            if n % 12 == 7:
+                res[n-1] ^= True
+            
+            j+=1
+            
+            
+        while (n := (3 * i**2) + (j**2)) <= limit:
+ 
             if n <= limit and n % 12 == 7:
                 res[n-1] ^= True
             
             j+=1
                 
+                
         j = i - 1
-        while (3 * i * i) - (j * j) <= limit
+        while (n := (3 * i**2) - (j**2)) <= limit:
 
-            n = (3 * i * i) - (j * j)
             if n % 12 == 11:
-                res[n] ^= True
+                res[n-1] ^= True
 
             j -= 1
         
@@ -48,9 +58,10 @@ def sieve(limit):
 
     r = 5
     while r * r <= limit:
-        if res[r]:
+        
+        if res[r-1]:
             for i in range(r * r, limit + 1, r * r):
-                res[i] = False
+                res[i-1] = False
 
         r += 1
 
