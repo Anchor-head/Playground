@@ -80,7 +80,7 @@ def draw_status():
 
     """draws the status bar"""
 
-    global is_draw
+    global current_winner, is_draw
 
     if current_winner is None:
 
@@ -96,11 +96,11 @@ def draw_status():
 
     font = pg.font.Font(None, 30)
 
-    text = font.render(message, 1, (255, 255, 255))
+    text = font.render(message, 1, (55, 255, 255))
 
-    screen.fill((0, 0, 0), (0, 400, 475, 100))
+    screen.fill((0, 0, 0), (0, 400, 400, 100)) # changed rectangle width to 400
 
-    text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT/2))
+    text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT+50))
 
     screen.blit(text, text_rect)
 
