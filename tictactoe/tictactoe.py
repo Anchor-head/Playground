@@ -20,6 +20,14 @@ is_draw = None
 
 
 
+# These variables allow the 10-second pause between games
+  
+reset_start_time = 0
+
+reset_pending = False
+
+
+
 WIDTH = 400
 
 HEIGHT = 400 # Add 100 later for the 
@@ -60,8 +68,6 @@ def game_initiating_window():
 
     pg.display.update()
 
-    time.sleep(3)
-
     screen.fill(BACKGROUND)
 
     pg.draw.line(screen, LINE_COLOR, (WIDTH / 3, 0), (WIDTH / 3, HEIGHT), 7)
@@ -80,9 +86,11 @@ def draw_status():
 
     """draws the status bar"""
 
-    global current_winner, is_draw
+    if is_draw:
 
-    if current_winner is None:
+        message = "Game Draw !"
+
+    elif current_winner is None:
 
         message = current_player.upper() + "'s Turn"
 
@@ -90,15 +98,11 @@ def draw_status():
 
         message = current_winner.upper() + " won !"
 
-    if is_draw:
-
-        message = "Game Draw !"
-
     font = pg.font.Font(None, 30)
 
     text = font.render(message, 1, (55, 255, 255))
 
-    screen.fill((0, 0, 0), (0, 400, 400, 100)) # changed rectangle width to 400
+    screen.fill((0, 0, 0), (0, 400, 400, 100))
 
     text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT+50))
 
@@ -116,6 +120,8 @@ def check_win():
 
     for row in range(3):
 
+        col = row
+
         if (grid[row][0] == grid[row][1] == grid[row][2]) and (grid[row][0] is not None):
 
             current_winner = grid[row][0]
@@ -127,8 +133,6 @@ def check_win():
                          (WIDTH, (row + 1)*HEIGHT / 3 - HEIGHT / 6), 4)
 
             break
-
-    for col in range(0, 3):
 
         if (grid[0][col] == grid[1][col] == grid[2][col]) and (grid[0][col] is not None):
 
@@ -154,7 +158,7 @@ def check_win():
 
         pg.draw.line(screen, (250, 70, 70), (350, 50), (50, 350), 4)
 
-    if (all([all(row) for row in grid]) and current_winner is None):
+    if (all([all(row) for row in grid])) and (current_winner is None):
 
         is_draw = True
 
@@ -170,41 +174,41 @@ def drawXO(row, col):
 
     if row == 1:
 
-        pos_x = 50
+        pos_y = 30
 
     if row == 2:
 
-        pos_x = WIDTH / 3 + 30
+        pos_y = WIDTH / 3 + 30
 
     if row == 3:
 
-        pos_x = WIDTH / 3 * 2 + 30
+        pos_y = WIDTH / 3 * 2 + 30
 
     if col == 1:
 
-        pos_y = 25
+        pos_x = 30
 
     if col == 2:
 
-        pos_y = HEIGHT / 3 + 30
+        pos_x = HEIGHT / 3 + 30
 
     if col == 3:
 
-        pos_y = HEIGHT / 3 * 2 + 30
+        pos_x = HEIGHT / 3 * 2 + 30
 
     grid[row-1][col-1] = current_player
 
     if current_player == 'x':
 
-        pg.draw.line(screen, (0, 0, 0), (pos_y, pos_x), (pos_y + size, pos_x + size), 5)
+        pg.draw.line(screen, (0, 0, 0), (pos_x, pos_y), (pos_x + size, pos_y + size), 5)
 
-        pg.draw.line(screen, (0, 0, 0), (pos_y, pos_x + size), (pos_y + size, pos_x), 5)
+        pg.draw.line(screen, (0, 0, 0), (pos_x, pos_y + size), (pos_x + size, pos_y), 5)
 
         current_player = 'o'
 
     else:
 
-        center = (pos_y + size // 2, pos_x + size // 2)
+        center = (pos_x + size // 2, pos_y + size // 2)
 
         radius = size // 2 - 5
 
@@ -266,21 +270,19 @@ def reset_game():
 
     """restarts game on win or draw"""
 
-    global grid, current_winner, current_player, is_draw
-
-    time.sleep(3)
+    global grid, current_winner, current_player, is_draw, reset_pending
 
     current_player = 'x'
 
     is_draw = False
 
-    game_initiating_window()
-
     current_winner = None
 
     grid = [[None]*3, [None]*3, [None]*3]
 
-
+    game_initiating_window()
+    
+    reset_pending = False
 
 game_initiating_window()
 
@@ -296,13 +298,19 @@ while True: # continue loop until user closes the window
 
             sys.exit()
 
-        elif event.type == MOUSEBUTTONDOWN:
+        elif event.type == MOUSEBUTTONDOWN and reset_pending == False: #ignore on-board clicks when game is finished
 
             user_click()
 
             if (current_winner or is_draw):
 
-                reset_game()
+                reset_start_time = time.time()
+                reset_pending = True
+
+
+    #Reset game when 10 seconds have elapsed
+    if reset_pending and time.time() - reset_start_time >= 10:
+        reset_game()
 
     pg.display.update()
 
